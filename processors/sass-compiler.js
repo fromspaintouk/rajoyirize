@@ -2,11 +2,11 @@ var fs = require('fs');
 var sass = require('node-sass');
 
 sass.render({
-    file: 'styles/main.scss',
+    file: '../styles/main.scss',
     outputStyle: 'compact'
 }, function(error, result) {
     if (!error) {
-        fs.writeFile('assets/styles.css', result.css, function(err) {
+        fs.writeFile('../assets/styles.css', result.css, function(err) {
             if(!err){
                 console.log('SASS compiled successfully!');
             } else {
