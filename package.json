@@ -1,0 +1,29 @@
+{
+  "name": "rajoyirize",
+  "version": "0.1.0",
+  "description": "The best quotes from the best Spanish president ever!",
+  "main": "src/rajoyirize.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lochus/rajoyirize.git"
+  },
+  "keywords": [
+    "spain",
+    "spanish",
+    "president",
+    "quotes"
+  ],
+  "author": "Jesús Iglesias, Albert Plana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lochus/rajoyirize/issues"
+  },
+  "homepage": "https://github.com/lochus/rajoyirize",
+  "devDependencies": {
+    "http-server": "^0.9.0",
+    "node-sass": "^3.4.2"
+  }
+}
