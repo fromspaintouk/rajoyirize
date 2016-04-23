@@ -3,3 +3,7 @@ $color: blue;
 h1 {
 	color: $color;
 }
+
+.hidden {
+	display: none !important;
+}
