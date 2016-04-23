@@ -5,6 +5,15 @@
         var randomIndex = Math.floor((Math.random() * numberOfQuotes + 1) - 1);
         return randomIndex;
     }
+    
+    function includeStyles() {
+        var link = document.createElement( "link" );        
+        link.href = "/assets/styles.css";
+        link.rel = "stylesheet";
+        link.type = "text/css";
+
+        document.getElementsByTagName("head")[0].appendChild(link);
+    }
 
     var Rajoyirize = function (settings) {
         settings = settings || {};
@@ -13,6 +22,7 @@
         this.quotes = this.getQuotes() || [];
         this.autostart = settings.autostart || false;
 
+        includeStyles();
         this.initElements();
 
         if (this.autostart) {
