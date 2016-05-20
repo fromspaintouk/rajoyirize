@@ -1,9 +1,44 @@
-$color: blue;
+#rajoyirize-container {
+    font-family: Arial;
+    font-size: 16px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    
+    &.hidden {
+        display: none !important;
+    }
+    
+    .rajoyirize-content-wrapper {
+        position: fixed;
+        width: 100%;
+        transition: 1s all ease-in-out; 
+        bottom: 0;
+        right: -100%;
+        opacity: 0;
 
-h1 {
-	color: $color;
-}
-
-.hidden {
-	display: none !important;
+        &.active {
+            transition: 1s all ease-in-out;
+            right: 0;
+            opacity: 1;
+        }
+        
+        img {
+            float: left;
+        }
+        
+        p {
+            float:left;
+            display: block;
+            width: 100%;
+            margin: 0;
+            bottom: 0;
+            padding: 20px;
+            background: #000;
+            color: #FFF;
+            opacity: 0.8;
+        }
+    }
 }

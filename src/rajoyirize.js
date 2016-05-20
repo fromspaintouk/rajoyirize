@@ -16,46 +16,53 @@
     }
 
     var Rajoyirize = function (settings) {
+        var self = this;
         settings = settings || {};
-        this.rajoyirizeContainerID = settings.containerId || 'rajoyirize-container';
-        this.rajoyImageSrc = settings.imageSrc || '/assets/images/rajoy/rajoy.png';
-        this.quotes = this.getQuotes() || [];
-        this.autostart = settings.autostart || false;
+        
+        self.rajoyirizeContainerID = settings.containerId || 'rajoyirize-container';
+        self.rajoyImageSrc = settings.imageSrc || '/assets/images/rajoy/rajoy.png';
+        self.autostart = settings.autostart || false;
 
         includeStyles();
-        this.initElements();
+        self.initElements();
 
-        if (this.autostart) {
-            this.start();
+        if (self.autostart) {
+            self.start();
         }
     };
 
     Rajoyirize.prototype.initElements = function () {
-        this.rajoyirizeContainer = document.createElement('div');
-        this.rajoyirizeContainer.id = this.rajoyirizeContainerID;
-        this.rajoyirizeContainer.className = 'hidden';
+        var self = this;
+        
+        self.rajoyirizeContainer = document.createElement('div');
+        self.rajoyirizeContainer.id = self.rajoyirizeContainerID;
+        self.rajoyirizeContentWrapper = document.createElement('div');
+        self.rajoyirizeContentWrapper.className = 'rajoyirize-content-wrapper';
 
-        this.rajoy = document.createElement('img');
-        this.rajoy.src = this.rajoyImageSrc;
-        this.rajoy.width = this.rajoy.height = 250;
+        self.rajoy = document.createElement('img');
+        self.rajoy.src = self.rajoyImageSrc;
+        self.rajoy.width = self.rajoy.height = 250;
 
-        this.quoteContainer = document.createElement('p');
+        self.quoteContainer = document.createElement('p');
 
-        this.rajoyirizeContainer.appendChild(this.rajoy);
-        this.rajoyirizeContainer.appendChild(this.quoteContainer);
+        self.rajoyirizeContentWrapper.appendChild(self.rajoy);
+        self.rajoyirizeContentWrapper.appendChild(self.quoteContainer);
+        self.rajoyirizeContainer.appendChild(this.rajoyirizeContentWrapper);
     };
 
     Rajoyirize.prototype.start = function () {
-        var numberOfQuotes = this.quotes.length;
+        var self = this;
+        self.quotes = self.getQuotes() || [];
 
-        document.body.appendChild(this.rajoyirizeContainer);
-        this.displayQuote(numberOfQuotes);
+        document.body.appendChild(self.rajoyirizeContainer);
+        self.displayQuote(self.quotes.length);
     };
 
     Rajoyirize.prototype.displayQuote = function (numberOfQuotes) {
-        var randomQuote = this.quotes[getRandomQuote(numberOfQuotes)].quote;
+        var self = this;
+        var randomQuote = self.quotes[getRandomQuote(numberOfQuotes)].quote;
 
-        this.quoteContainer.innerHTML = randomQuote;
+        self.quoteContainer.innerHTML = randomQuote;
     };
 
     Rajoyirize.prototype.getQuotes = function () {
