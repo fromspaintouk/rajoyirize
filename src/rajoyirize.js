@@ -1,65 +1,88 @@
 (function () {
     'use strict';
 
-    function getRandomQuote(numberOfQuotes) {
-        var randomIndex = Math.floor((Math.random() * numberOfQuotes + 1) - 1);
-        return randomIndex;
-    }
-    
-    function includeStyles() {
-        var link = document.createElement( "link" );        
-        link.href = "/assets/styles.css";
-        link.rel = "stylesheet";
-        link.type = "text/css";
+    var Rajoyirize = function (userSettings) {
+        // Private
+        var properties = {};
 
-        document.getElementsByTagName("head")[0].appendChild(link);
-    }
+        function getRandomQuote(numberOfQuotes) {
+            var randomIndex = Math.floor((Math.random() * numberOfQuotes + 1) - 1);
 
-    var Rajoyirize = function (settings) {
-        settings = settings || {};
-        this.rajoyirizeContainerID = settings.containerId || 'rajoyirize-container';
-        this.rajoyImageSrc = settings.imageSrc || '/assets/images/rajoy/rajoy.png';
-        this.quotes = this.getQuotes() || [];
-        this.autostart = settings.autostart || false;
+            return randomIndex;
+        }
+
+        function includeStyles() {
+            var link = document.createElement("link");
+
+            link.href = "/assets/styles.css";
+            link.rel = "stylesheet";
+            link.type = "text/css";
+
+            document.getElementsByTagName("head")[0].appendChild(link);
+        }
+
+        function initSettings(userSettings) {
+            var finalSettings = {};
+
+            userSettings = userSettings || {};
+
+            finalSettings.rajoyirizeContainerID = userSettings.containerId || 'rajoyirize-container';
+            finalSettings.rajoyImageSrc = userSettings.imageSrc || '/assets/images/rajoy/rajoy.png';
+            finalSettings.autostart = userSettings.autostart || false;
+
+            properties.settings = finalSettings;
+        }
+
+        function initQuotes() {
+            properties.quotes = getQuotes() || [];
+        }
+
+        function initElements() {
+            var domElements = {};
+
+            domElements.rajoyirizeContainer = document.createElement('div');
+            domElements.rajoyirizeContainer.id = properties.settings.rajoyirizeContainerID;
+            domElements.rajoyirizeContainer.className = 'hidden';
+
+            domElements.rajoy = document.createElement('img');
+            domElements.rajoy.src = properties.settings.rajoyImageSrc;
+            domElements.rajoy.width = domElements.rajoy.height = 250;
+
+            domElements.quoteContainer = document.createElement('p');
+            domElements.quoteContainer.className = 'quote';
+
+            domElements.rajoyirizeContainer.appendChild(domElements.rajoy);
+            domElements.rajoyirizeContainer.appendChild(domElements.quoteContainer);
+
+            properties.DOM = domElements;
+        }
+
+        function getQuotes() {
+            return quotes || [{ quote: 'no quotes file found'}];
+        }
+
+        function displayQuote(numberOfQuotes) {
+            var randomQuote = properties.quotes[getRandomQuote(numberOfQuotes)].quote;
+
+            properties.DOM.quoteContainer.innerHTML = randomQuote;
+        }
+
+        // Public
+        this.start = function () {
+            var numberOfQuotes = properties.quotes.length;
+
+            document.body.appendChild(properties.DOM.rajoyirizeContainer);
+            displayQuote(numberOfQuotes);
+        };
 
         includeStyles();
-        this.initElements();
+        initSettings(userSettings);
+        initElements();
+        initQuotes();
 
-        if (this.autostart) {
+        if (properties.settings.autostart) {
             this.start();
         }
-    };
-
-    Rajoyirize.prototype.initElements = function () {
-        this.rajoyirizeContainer = document.createElement('div');
-        this.rajoyirizeContainer.id = this.rajoyirizeContainerID;
-        this.rajoyirizeContainer.className = 'hidden';
-
-        this.rajoy = document.createElement('img');
-        this.rajoy.src = this.rajoyImageSrc;
-        this.rajoy.width = this.rajoy.height = 250;
-
-        this.quoteContainer = document.createElement('p');
-
-        this.rajoyirizeContainer.appendChild(this.rajoy);
-        this.rajoyirizeContainer.appendChild(this.quoteContainer);
-    };
-
-    Rajoyirize.prototype.start = function () {
-        var numberOfQuotes = this.quotes.length;
-
-        document.body.appendChild(this.rajoyirizeContainer);
-        this.displayQuote(numberOfQuotes);
-    };
-
-    Rajoyirize.prototype.displayQuote = function (numberOfQuotes) {
-        var randomQuote = this.quotes[getRandomQuote(numberOfQuotes)].quote;
-
-        this.quoteContainer.innerHTML = randomQuote;
-    };
-
-    Rajoyirize.prototype.getQuotes = function () {
-        return quotes || [{ quote: 'no quotes file found'}];
     };
 
     window.Rajoyirize = Rajoyirize;
