@@ -42,7 +42,9 @@
 
             domElements.rajoyirizeContainer = document.createElement('div');
             domElements.rajoyirizeContainer.id = properties.settings.rajoyirizeContainerID;
-            domElements.rajoyirizeContainer.className = 'hidden';
+            
+            domElements.rajoyirizeContentWrapper = document.createElement('div');
+            domElements.rajoyirizeContentWrapper.className = 'rajoyirize-content-wrapper';
 
             domElements.rajoy = document.createElement('img');
             domElements.rajoy.src = properties.settings.rajoyImageSrc;
@@ -50,9 +52,10 @@
 
             domElements.quoteContainer = document.createElement('p');
             domElements.quoteContainer.className = 'quote';
-
-            domElements.rajoyirizeContainer.appendChild(domElements.rajoy);
-            domElements.rajoyirizeContainer.appendChild(domElements.quoteContainer);
+            
+            domElements.rajoyirizeContainer.appendChild(domElements.rajoyirizeContentWrapper);
+            domElements.rajoyirizeContentWrapper.appendChild(domElements.rajoy);
+            domElements.rajoyirizeContentWrapper.appendChild(domElements.quoteContainer);
 
             properties.DOM = domElements;
         }
