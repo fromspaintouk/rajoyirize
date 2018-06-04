@@ -1,9 +1,12 @@
-(function () {
+(function (d, w) {
     'use strict';
 
     var Rajoyirize = function (userSettings) {
         // Private
         var properties = {};
+        var konamiKeys = '38,38,40,40,37,39,37,39,66,65';
+        var userKeys = [];
+        var _self = this;
 
         function getRandomQuote(numberOfQuotes) {
             var randomIndex = Math.floor((Math.random() * numberOfQuotes + 1) - 1);
@@ -12,13 +15,13 @@
         }
 
         function includeStyles() {
-            var link = document.createElement("link");
+            var link = d.createElement("link");
 
             link.href = "/assets/styles.css";
             link.rel = "stylesheet";
             link.type = "text/css";
 
-            document.getElementsByTagName("head")[0].appendChild(link);
+            d.getElementsByTagName("head")[0].appendChild(link);
         }
 
         function initSettings(userSettings) {
@@ -28,31 +31,28 @@
 
             finalSettings.rajoyirizeContainerID = userSettings.containerId || 'rajoyirize-container';
             finalSettings.rajoyImageSrc = userSettings.imageSrc || '/assets/images/rajoy/rajoy.png';
+            finalSettings.visibleTime = userSettings.visibleTime || 6000;
             finalSettings.autostart = userSettings.autostart || false;
 
             properties.settings = finalSettings;
         }
 
-        function initQuotes() {
-            properties.quotes = getQuotes() || [];
-        }
-
         function initElements() {
             var domElements = {};
 
-            domElements.rajoyirizeContainer = document.createElement('div');
+            domElements.rajoyirizeContainer = d.createElement('div');
             domElements.rajoyirizeContainer.id = properties.settings.rajoyirizeContainerID;
-            
-            domElements.rajoyirizeContentWrapper = document.createElement('div');
+
+            domElements.rajoyirizeContentWrapper = d.createElement('div');
             domElements.rajoyirizeContentWrapper.className = 'rajoyirize-content-wrapper';
 
-            domElements.rajoy = document.createElement('img');
+            domElements.rajoy = d.createElement('img');
             domElements.rajoy.src = properties.settings.rajoyImageSrc;
             domElements.rajoy.width = domElements.rajoy.height = 250;
 
-            domElements.quoteContainer = document.createElement('p');
+            domElements.quoteContainer = d.createElement('p');
             domElements.quoteContainer.className = 'quote';
-            
+
             domElements.rajoyirizeContainer.appendChild(domElements.rajoyirizeContentWrapper);
             domElements.rajoyirizeContentWrapper.appendChild(domElements.rajoy);
             domElements.rajoyirizeContentWrapper.appendChild(domElements.quoteContainer);
@@ -61,32 +61,82 @@
         }
 
         function getQuotes() {
-            return quotes || [{ quote: 'no quotes file found'}];
+            var request = new XMLHttpRequest();
+            var quotesSpreadsheetUrl = 'https://spreadsheets.google.com/feeds/list/1tMu-I25eZX1ojpSnB3W4ww6SB9uAbsSKFEwBLmX81F0/od6/public/values?alt=json';
+
+            request.onreadystatechange = function() {
+              if (request.readyState === 4) {
+                if (request.status === 200) {
+                    properties.quotes = extractQuotesArray(this.responseText) || [{ quote: 'no quotes file found'}];
+                    displayQuote();
+                } else {
+                    console.log('ERROR: Could not load the quotes');
+                }
+              }
+            }
+
+            request.open('Get', quotesSpreadsheetUrl);
+            request.send();
         }
 
-        function displayQuote(numberOfQuotes) {
-            var randomQuote = properties.quotes[getRandomQuote(numberOfQuotes)].quote;
+        function extractQuotesArray(responseText) {
+            var quotesData = JSON.parse(responseText);
+            var quotesObjectArray = quotesData.feed.entry || [];
+            var quotesArray = quotesObjectArray.map(function(quoteObject) {
+                return { 'quote': quoteObject.title.$t };
+            });
 
-            properties.DOM.quoteContainer.innerHTML = randomQuote;
+            return quotesArray;
         }
+
+        function displayQuote() {
+            properties.DOM.quoteContainer.innerHTML = getQuote();
+            properties.DOM.rajoyirizeContentWrapper.classList.add('active');
+            hideQuote();
+        }
+
+        function hideQuote() {
+            var timer = w.setTimeout(function() {
+                properties.DOM.rajoyirizeContentWrapper.classList.remove('active');
+                clearTimeout(timer);
+            }, properties.settings.visibleTime);
+        }
+
+        function getQuote() {
+            var numberOfQuotes =  properties.quotes.length;
+
+            return properties.quotes[getRandomQuote(numberOfQuotes)].quote;
+        }
+
+        function start() {
+            getQuotes();
+            d.body.appendChild(properties.DOM.rajoyirizeContainer);
+        };
 
         // Public
-        this.start = function () {
-            var numberOfQuotes = properties.quotes.length;
-
-            document.body.appendChild(properties.DOM.rajoyirizeContainer);
-            displayQuote(numberOfQuotes);
+        _self.displayQuote = function() {
+            displayQuote();
         };
 
         includeStyles();
         initSettings(userSettings);
         initElements();
-        initQuotes();
 
         if (properties.settings.autostart) {
-            this.start();
+            start();
+        }
+
+        // Konami code listener
+        d.onkeydown = function(event) {
+            userKeys.push(event.keyCode)
+
+            if (userKeys.toString().indexOf(konamiKeys) >= 0) {
+                _self.displayQuote();
+                userKeys = [];
+            }
         }
     };
 
-    window.Rajoyirize = Rajoyirize;
-}());
+    w.Rajoyirize = Rajoyirize;
+}(document, window));
+
