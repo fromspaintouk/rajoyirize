@@ -30,7 +30,7 @@
             userSettings = userSettings || {};
 
             finalSettings.rajoyirizeContainerID = userSettings.containerId || 'rajoyirize-container';
-            finalSettings.rajoyImageSrc = userSettings.imageSrc || '/assets/images/rajoy/rajoy.png';
+            finalSettings.rajoyImageSrc = userSettings.imageSrc || 'assets/images/rajoy/rajoy.png';
             finalSettings.visibleTime = userSettings.visibleTime || 6000;
             finalSettings.autostart = userSettings.autostart || false;
 
