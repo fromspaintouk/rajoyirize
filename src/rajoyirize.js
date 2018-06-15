@@ -17,7 +17,7 @@
         function includeStyles() {
             var link = d.createElement("link");
 
-            link.href = "/assets/styles.css";
+            link.href = "assets/styles.css";
             link.rel = "stylesheet";
             link.type = "text/css";
 
